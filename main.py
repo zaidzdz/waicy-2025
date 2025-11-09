@@ -1,14 +1,28 @@
-import cv2
+import os
+import sys
 import time
-import mediapipe as mp
+import types
+from importlib import util
+
+os.environ.setdefault("MEDIAPIPE_DISABLE_TENSORFLOW", "1")
+
+import cv2
 import numpy as np
+
+# Stub mediapipe to bypass heavy optional imports.
+_mp_spec = util.find_spec("mediapipe")
+if _mp_spec and _mp_spec.submodule_search_locations:
+    _mp_stub = types.ModuleType("mediapipe")
+    _mp_stub.__path__ = list(_mp_spec.submodule_search_locations)
+    sys.modules.setdefault("mediapipe", _mp_stub)
+
+from mediapipe.python.solutions import drawing_utils as mp_draw
+from mediapipe.python.solutions import pose as mp_pose
+
 import angles
 
 # This script remains as a lightweight demonstration of live angle calculation.
 # For recording and comparison, please use recorder.py and live_compare.py.
-
-mp_pose = mp.solutions.pose
-mp_draw = mp.solutions.drawing_utils
 
 cap = cv2.VideoCapture(0)
 prev_time = 0

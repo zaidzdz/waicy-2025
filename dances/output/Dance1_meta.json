@@ -1,0 +1,19 @@
+{
+    "source_file": "c:\\Users\\Xxran\\Downloads\\New folder (5)\\waicy-2025-1\\dances\\train\\Dance1.mp4",
+    "capture_type": "video",
+    "fps": 24.0,
+    "frame_count": 414,
+    "angle_list": [
+        "LEFT_SHOULDER",
+        "RIGHT_SHOULDER",
+        "LEFT_ELBOW",
+        "RIGHT_ELBOW",
+        "LEFT_HIP",
+        "RIGHT_HIP",
+        "LEFT_KNEE",
+        "RIGHT_KNEE"
+    ],
+    "timestamp_utc": "2025-11-09T04:01:56.177781Z",
+    "mediapipe_version": "0.10.11",
+    "notes": "Recorded by recorder.py --source video"
+}

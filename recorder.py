@@ -1,13 +1,32 @@
-import cv2
-import mediapipe as mp
-import numpy as np
+import os
 import argparse
-import time
 import json
+import sys
+import time
+import types
 from datetime import datetime
+from importlib import metadata, util
+
+os.environ.setdefault("MEDIAPIPE_DISABLE_TENSORFLOW", "1")
+
+import cv2
+import numpy as np
+
+# Stub the top-level mediapipe package to avoid importing optional TensorFlow-heavy modules.
+_mp_spec = util.find_spec("mediapipe")
+if _mp_spec and _mp_spec.submodule_search_locations:
+    _mp_stub = types.ModuleType("mediapipe")
+    _mp_stub.__path__ = list(_mp_spec.submodule_search_locations)
+    sys.modules.setdefault("mediapipe", _mp_stub)
+
+from mediapipe.python.solutions import drawing_utils as mp_draw
+from mediapipe.python.solutions import pose as mp_pose
 
 import angles
 import io_utils
+
+# Capture the installed MediaPipe version without importing the top-level package (which pulls TensorFlow).
+MEDIAPIPE_VERSION = metadata.version("mediapipe")
 
 # --- Configuration and Setup ---
 try:
@@ -17,8 +36,6 @@ except FileNotFoundError:
     print("E109: config.json not found. Please ensure the configuration file exists.")
     exit()
 
-mp_pose = mp.solutions.pose
-mp_draw = mp.solutions.drawing_utils
 POSE = mp_pose.Pose(static_image_mode=False, model_complexity=1, min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
 # --- Argument Parsing ---
@@ -80,18 +97,18 @@ def record_from_video():
 
     cap.release()
 
-    metadata = {
+    metadata_dict = {
         "source_file": args.path,
         "capture_type": "video",
         "fps": fps,
         "frame_count": frame_count,
         "angle_list": config['joints'],
         "timestamp_utc": datetime.utcnow().isoformat() + "Z",
-        "mediapipe_version": mp.__version__,
+        "mediapipe_version": MEDIAPIPE_VERSION,
         "notes": f"Recorded by recorder.py --source video"
     }
     
-    io_utils.write_angles_csv(args.out, header, rows, metadata)
+    io_utils.write_angles_csv(args.out, header, rows, metadata_dict)
 
 def record_from_webcam():
     """Records angles from a live webcam feed."""
@@ -159,17 +176,17 @@ def record_from_webcam():
             if recorded_data:
                 print("Saving data...")
                 header = ['frame', 'timestamp', 'fps', 'pose_confidence'] + config['joints']
-                metadata = {
+                metadata_dict = {
                     "source_file": "webcam",
                     "capture_type": "webcam",
                     "fps": np.mean([row[2] for row in recorded_data]),
                     "frame_count": len(recorded_data),
                     "angle_list": config['joints'],
                     "timestamp_utc": datetime.utcnow().isoformat() + "Z",
-                    "mediapipe_version": mp.__version__,
+                    "mediapipe_version": MEDIAPIPE_VERSION,
                     "notes": "Recorded by recorder.py --source webcam"
                 }
-                io_utils.write_angles_csv(args.out, header, recorded_data, metadata)
+                io_utils.write_angles_csv(args.out, header, recorded_data, metadata_dict)
                 recorded_data = [] # Clear after saving
             else:
                 print("No data to save. Record first using 'r'.")

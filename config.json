@@ -26,6 +26,7 @@
         "E106": "Angle numeric issue (landmarks collapsed; skip)",
         "E107": "Metadata write failed (permission)",
         "E108": "Resampling/alignment failed (bad lengths/timestamps)",
-        "E109": "Unknown exception (see DEBUG logs)"
+        "E109": "Unknown exception (see DEBUG logs)",
+        "E110": "Reference video unavailable"
     }
 }

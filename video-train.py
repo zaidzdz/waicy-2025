@@ -1,8 +1,23 @@
-import cv2
-import mediapipe as mp
-import json
+import os
+import sys
+import types
 from datetime import datetime
+from importlib import metadata, util
+
+os.environ.setdefault("MEDIAPIPE_DISABLE_TENSORFLOW", "1")
+
+import cv2
+import json
 import numpy as np
+
+# Stub mediapipe to avoid importing optional TensorFlow dependencies.
+_mp_spec = util.find_spec("mediapipe")
+if _mp_spec and _mp_spec.submodule_search_locations:
+    _mp_stub = types.ModuleType("mediapipe")
+    _mp_stub.__path__ = list(_mp_spec.submodule_search_locations)
+    sys.modules.setdefault("mediapipe", _mp_stub)
+
+from mediapipe.python.solutions import pose as mp_pose
 
 import angles
 import io_utils
@@ -33,7 +48,6 @@ frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 rows = []
 header = ['frame', 'timestamp', 'fps', 'pose_confidence'] + config['joints']
 
-mp_pose = mp.solutions.pose
 pose = mp_pose.Pose(static_image_mode=True, model_complexity=1)
 
 for frame_num in range(frame_count):
@@ -63,15 +77,15 @@ pose.close()
 print("Result: Video processing complete.")
 
 # --- Save Data ---
-metadata = {
+metadata_dict = {
     "source_file": video_path,
     "capture_type": "video",
     "fps": fps,
     "frame_count": len(rows),
     "angle_list": config['joints'],
     "timestamp_utc": datetime.utcnow().isoformat() + "Z",
-    "mediapipe_version": mp.__version__,
+    "mediapipe_version": metadata.version("mediapipe"),
     "notes": f"Recorded by legacy video-train.py"
 }
 
-io_utils.write_angles_csv(output_prefix, header, rows, metadata)
+io_utils.write_angles_csv(output_prefix, header, rows, metadata_dict)
