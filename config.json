@@ -1,0 +1,32 @@
+{
+    "joints": [
+        "LEFT_SHOULDER",
+        "RIGHT_SHOULDER",
+        "LEFT_ELBOW",
+        "RIGHT_ELBOW",
+        "LEFT_HIP",
+        "RIGHT_HIP",
+        "LEFT_KNEE",
+        "RIGHT_KNEE"
+    ],
+    "plotting": {
+        "live_color": [0, 255, 0],
+        "canonical_color": [255, 100, 0],
+        "diff_color": [0, 0, 255]
+    },
+    "sampling_rate_hz": 30,
+    "visibility_threshold": 0.3,
+    "error_codes": {
+        "E100": "OK",
+        "E101": "Input video not found (check path or use --source webcam)",
+        "E102": "Webcam open failed (permissions/device index)",
+        "E103": "MediaPipe initialization error (install/reinstall)",
+        "E104": "CSV write failed (disk/permission)",
+        "E105": "Many low-confidence frames (lighting/camera angle)",
+        "E106": "Angle numeric issue (landmarks collapsed; skip)",
+        "E107": "Metadata write failed (permission)",
+        "E108": "Resampling/alignment failed (bad lengths/timestamps)",
+        "E109": "Unknown exception (see DEBUG logs)",
+        "E110": "Reference video unavailable"
+    }
+}
