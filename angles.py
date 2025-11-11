@@ -41,6 +41,6 @@ def outputToAngleArray(landmarks,mp_pose):
 def differenceAngleArrays(arrayA, arrayB):
     newArray = []
 
-    for i in arrayA:
+    for i in range(len(arrayA)):
         newArray.append(arrayA[i]-arrayB[i])
     return newArray
