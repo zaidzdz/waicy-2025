@@ -127,3 +127,25 @@ def outputToAngleArray(landmarks, mp_pose, visibility_threshold=0.3) -> list:
     ]
     
     return [angle_dict.get(name, np.nan) for name in fixed_order]
+def outputToAngleArray(landmarks,mp_pose):
+    angles = []
+    for name, (a, b, c) in angle_map.items():
+                    
+                    p1 = landmarks[mp_pose.PoseLandmark[a].value]
+                    p2 = landmarks[mp_pose.PoseLandmark[b].value]
+                    p3 = landmarks[mp_pose.PoseLandmark[c].value]
+
+                    angle = calculate_angle(
+                        (p1.x, p1.y, p1.z),
+                        (p2.x, p2.y, p2.z),
+                        (p3.x, p3.y, p3.z)
+                    )
+                    angles.append(angle)
+                
+    return angles
+def differenceAngleArrays(arrayA, arrayB):
+    newArray = []
+
+    for i in range(len(arrayA)):
+        newArray.append(arrayA[i]-arrayB[i])
+    return newArray
