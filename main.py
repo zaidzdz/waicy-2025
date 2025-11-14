@@ -48,14 +48,6 @@ def csvToArrays (CSV):
 
 dance1data = csvToArrays("dances/output/Dance1.csv")
 
-mp_pose = mp.solutions.pose
-mp_draw = mp.solutions.drawing_utils
-
-cap = cv2.VideoCapture(0)
-
-
-
-
 angle_map = {
     "LEFT_ELBOW":     ("LEFT_SHOULDER", "LEFT_ELBOW", "LEFT_WRIST"),
     "RIGHT_ELBOW":    ("RIGHT_SHOULDER", "RIGHT_ELBOW", "RIGHT_WRIST"),

@@ -1,7 +1,7 @@
 opencv-python
-mediapipe==0.10.11
+mediapipe==0.10.13
 numpy
 pandas
 scipy
 matplotlib
-protobuf==3.20.3
+protobuf>=4.25.3,<5
